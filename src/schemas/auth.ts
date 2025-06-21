@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Base auth schema for sign in (Thai messages)
 export const signInSchema = z.object({
-  username: z.string().min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร"),
+  username: z.string().min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร").transform(val => val.toLowerCase()),
   password: z
     .string()
     .min(8, "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร")
@@ -22,7 +22,8 @@ export const signUpSchema = z
     username: z
       .string()
       .min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร")
-      .max(50, "ชื่อผู้ใช้ต้องไม่เกิน 50 ตัวอักษร"),
+      .max(50, "ชื่อผู้ใช้ต้องไม่เกิน 50 ตัวอักษร")
+      .transform(val => val.toLowerCase()),
     password: z
       .string()
       .min(8, "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร")

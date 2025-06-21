@@ -20,10 +20,18 @@ const handler = async (...args: any[]) => {
     const clonedRequest = request.clone();
     const body = await clonedRequest.formData();
     try {
-      const validatedData = signInSchema.parse({
+      const validatedData = signInSchema.safeParse({
         username: body.get("username"),
         password: body.get("password"),
       });
+
+      if (!validatedData.success) {
+        return NextResponse.json(
+          { error: "Invalid input data", details: validatedData.error.errors },
+          { status: 400 }
+        );
+      }
+
       const turnstileValid = await verifyTurnstile(
         body.get("turnstileToken") as string
       );
@@ -36,21 +44,12 @@ const handler = async (...args: any[]) => {
 
       return NextAuth(authOptions)(...args);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return NextResponse.json(
-          {
-            error: "Invalid input data",
-            details: error.errors,
-          },
-          { status: 400 }
-        );
-      }
+      console.error(error);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
   }
 
   // Else
