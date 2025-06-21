@@ -1,0 +1,11 @@
+node_modules
+.env
+.next
+.claude
+.DS_Store
+.cache
+.vscode
+.cursor
+yarn-error.log
+npm-debug.log
+.idea
